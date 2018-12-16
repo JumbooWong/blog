@@ -1,11 +1,11 @@
 # 视图层
 from django.shortcuts import render, redirect
 from blog1 import http as hp
-
+from blog1.test import test
 
 # 主页
 def home(request):
-
+    test()
     data = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”'
     time = '2018-9-08 12:00:12'
     # REST接口
