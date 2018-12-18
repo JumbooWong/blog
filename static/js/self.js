@@ -69,9 +69,9 @@ $(document).ready(function () {
     //     isDraging = false;
     // });
     //窗口大小改变时，对话框始终居中
-    window.onresize = function () {
-        autoCenter($dialog);
-    };
+    // window.onresize = function () {
+    //     autoCenter($dialog);
+    // };
 
 
 });
