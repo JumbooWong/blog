@@ -1,7 +1,7 @@
 # 视图层
 from django.shortcuts import render, redirect
 from blog1 import http as hp
-from blog1.Dao.messages import showMessage
+from blog1.Dao.messages import showMessage,addMessage
 
 # 主页
 def home(request):
@@ -33,22 +33,16 @@ def albums(request):
 
 # 留言页面
 def comments(request):
-    comments = []
-    floor = 1
     if request.method == 'POST':
         concat = request.POST
         message = concat.get('message')
+
         if request.session.get('user', False) and message:
-            request.session['message'] = None
+            # request.session['message'] = None
             # 插入数据库
-            comment = {}
-            comment['user'] = 'Jumboo'
-            comment['message'] = message
-            comment['floor'] = floor
-            comment['date'] = '2018-12-10' + '\t' + '15:11:32'
-            comments.append(comment)
-            floor += 1
-            print('comment')
+            add_status = addMessage(request.session['user']['acct'],message)
+            if add_status:print('评论成功！')
+            else:print('评论失败！')
             #前端处理
         # else:
         #     request.session['message'] = message.strip()
@@ -102,8 +96,9 @@ def login(request):
         print(username, password, keep)
         pre_url = request.session.get('url')
         if username and password:
-            url = "http://47.105.163.206:8003/user/login?username=" + username + "&password=" + password
-            user = hp.get(url)
+            # url = "http://47.105.163.206:8003/user/login?username=" + username + "&password=" + password
+            # user = hp.get(url)
+            user = {'acct':username}
             print(user)
             if (user):
                 print("登录成功")

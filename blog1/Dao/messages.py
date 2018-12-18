@@ -3,6 +3,8 @@ from django.core import serializers
 from django.shortcuts import HttpResponse
 import json
 import time
+
+#评论查询
 def showMessage(max_floor):
     try:
         comments = []
@@ -22,6 +24,18 @@ def showMessage(max_floor):
         pass
     return comments
     # print(message_info.objects.all())
+
+#评论增加
+def addMessage(user_name,message):
+    try:
+
+        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        # test1 = comment_info(id=12345,user_id=1,user_name='jumbooo',content='第一条留言',create_time=create_time)
+        # test1.save()
+        message_info.objects.create(user_id=1,user_name=user_name,content=message,create_time=create_time)
+        return 1
+    except:
+        return 0
 
 
 
