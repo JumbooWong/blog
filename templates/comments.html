@@ -23,17 +23,15 @@
 
         </form>
     </div>
-
-
     <div class="navbar-brand" style="color:#2b669a;width: 100%;">留言区</div>
 
     <div id="already"  style="float: left;width: 100%;left:10%">
 
         {% for comment in comments %}
             <div id="top1" style="border-bottom:2px solid #c0c0c0;border-top:2px solid #c0c0c0 ;">
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.message }}</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.content }}</p>
                 <small style="float: right">{{ comment.floor }}楼
-                    {{ comment.user }}&nbsp;&nbsp;{{ comment.date }}<a>&nbsp;&nbsp;删除&nbsp;&nbsp;</a><a>回复</a>
+                    {{ comment.user_name }}&nbsp;&nbsp;{{ comment.create_time|date:"Y-m-d H:i:s" }}<a>&nbsp;&nbsp;删除&nbsp;&nbsp;</a><a>回复</a>
                 </small>
                 <br>
             </div>

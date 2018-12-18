@@ -1,11 +1,10 @@
 # 视图层
 from django.shortcuts import render, redirect
 from blog1 import http as hp
-from blog1.test import test
+from blog1.Dao.messages import showMessage
 
 # 主页
 def home(request):
-    test()
     data = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”'
     time = '2018-9-08 12:00:12'
     # REST接口
@@ -53,15 +52,8 @@ def comments(request):
             #前端处理
         # else:
         #     request.session['message'] = message.strip()
-
     # 从数据库中读取评论数据
-    for i in range(floor, floor + 3):
-        comment = {}
-        comment['user'] = 'Jumboo'
-        comment['message'] = '博主最帅！！！！'
-        comment['floor'] = i
-        comment['date'] = '2018-12-10' + '\t' + '15:11:32'
-        comments.append(comment)
+    comments = showMessage(5)
     request.session['url'] = request.path
     return render(request, 'comments.html', {'comments': comments})
 
