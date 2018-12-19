@@ -2,20 +2,25 @@
 from django.shortcuts import render, redirect
 from blog1 import http as hp
 from blog1.Dao.messages import showMessage,addMessage
-
+from blog1.comments import showPageList
+from math import ceil
+from blog1.Dao import messages
 # 主页
 def home(request):
     data = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”'
     time = '2018-9-08 12:00:12'
-    # REST接口
-    url = 'http://47.105.163.206:8002/blog/get?id=1'
-    # res = requests.get(url)
-    # content = json.loads(res.text)
-    # data = content['content']
-    # time = content['createTime']
-    # read_time = content['readTime']
+    # 获取数据库中一共多少条数据
+    message_count = messages.messageCount()
+    #每页显示max_message条数据
+    max_message = 2
+    request.session['max_message'] = max_message
+    # 总页数
+    page_num = ceil(message_count / max_message)
+    request.session['page_num'] = page_num
+    request.session['show_num'] = 3
+    request.session['page_num_list'] = showPageList(request.session.get('page_num'),request.session['show_num'])
+    request.session['current_num'] = 1
     request.session['url'] = request.path
-    # request.session['login_stat'] = '1'
     return render(request, 'home.html', {'top1': data, 'time': time, 'read_time': 5})
 
 
@@ -43,13 +48,13 @@ def comments(request):
             add_status = addMessage(request.session['user']['acct'],message)
             if add_status:print('评论成功！')
             else:print('评论失败！')
-            #前端处理
-        # else:
-        #     request.session['message'] = message.strip()
     # 从数据库中读取评论数据
-    comments = showMessage(5)
+    comments = showMessage(request.session.get('max_message',0),request.session['current_num'])
+
     request.session['url'] = request.path
-    return render(request, 'comments.html', {'comments': comments})
+    return render(request, 'comments.html',{'comments':comments})
+
+
 
 
 # 单文章
@@ -133,8 +138,9 @@ def logout(request):
     request.session['login_stat']='1'
     return redirect(pre_url)
 
-
+#关闭登录页面
 def loginClose(request):
     pre_url = request.session.get('url')
     request.session['login_stat'] = '1'
     return redirect(pre_url)
+

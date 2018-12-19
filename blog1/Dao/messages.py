@@ -1,18 +1,17 @@
 from blog1.models import message_info
 from django.core import serializers
-from django.shortcuts import HttpResponse
 import json
 import time
 
 #评论查询
-def showMessage(max_floor):
+def showMessage(max_floor,current_page):
     try:
         comments = []
-        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         # test1 = comment_info(id=12345,user_id=1,user_name='jumbooo',content='第一条留言',create_time=create_time)
         # test1.save()
         res_data = message_info.objects.all().values('id','user_id','user_name','content','create_time')
-        res = list(res_data)
+        first = (current_page-1)*max_floor
+        res = list(res_data)[first:first+max_floor]
         for ix,each in enumerate(res):
             if ix < max_floor:
                 each['floor'] = str(ix+1)
@@ -36,6 +35,11 @@ def addMessage(user_name,message):
         return 1
     except:
         return 0
+
+#查询总量
+def messageCount():
+    return message_info.objects.all().count()
+
 
 
 

@@ -18,14 +18,14 @@
             <textarea id="message" name="message" placeholder="请输入你的留言"
                       style="width: 100%;float:right;height: 130px;"></textarea>
             <br/><br/>
-            <input id="commentButton" name="login" type="submit"  class="btn btn-primary" value="发表"
+            <input id="commentButton" name="login" type="submit" class="btn btn-primary" value="发表"
                    style="float:right;margin-left: 10px;width:10%"/>
 
         </form>
     </div>
     <div class="navbar-brand" style="color:#2b669a;width: 100%;">留言区</div>
 
-    <div id="already"  style="float: left;width: 100%;left:10%">
+    <div id="already" style="float: left;width: 100%;left:10%">
 
         {% for comment in comments %}
             <div id="top1" style="border-bottom:2px solid #c0c0c0;border-top:2px solid #c0c0c0 ;">
@@ -33,26 +33,41 @@
                 <small style="float: right">{{ comment.floor }}楼
                     {{ comment.user_name }}&nbsp;&nbsp;{{ comment.create_time|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
                     {% if request.session.user.acct == 'jumboooo' %}
-                    <a>&nbsp;&nbsp;删除&nbsp;&nbsp;</a>
+                        <a>&nbsp;&nbsp;删除&nbsp;&nbsp;</a>
                     {% endif %}<a>回复</a>
                 </small>
                 <br>
             </div>
         {% endfor %}
-{#    <p id="user" hidden="true">{{ request.session.user }}</p>#}
+        <ul class="pagination">
+            <li><a href="comments/page=pre">&laquo;</a></li>
+            {% for num in request.session.page_num_list %}
+                {% if  num == request.session.current_num %}
+                    <li class="active"><a href="comments/page={{ num }}">{{ num }}</a></li>
+                {% else %}
+                    <li><a href="comments/page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            <li><a href="comments/page=next">&raquo;</a></li>
+        </ul>
     </div>
 
 {% endblock %}
 <!-- 填充页面js代码内容 -->
 {% block js %}
+    <script>
+
+
+    </script>
+
     <script lang="javascript">
         var comment = document.getElementById("commentButton");
         var user = "{{ request.session.user }}";
         comment.onclick = function check() {
-            if (user){
+            if (user) {
                 return true;
             }
-            else{
+            else {
                 $('#div3').show(100);
                 hidebg.style.display = "block";
                 $('#body').attr("style", "overflow: hidden");
@@ -60,7 +75,6 @@
             }
 
         }
-
 
     </script>
 {% endblock %}
