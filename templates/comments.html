@@ -32,8 +32,8 @@
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.content }}</p>
                 <small style="float: right">{{ comment.floor }}楼
                     {{ comment.user_name }}&nbsp;&nbsp;{{ comment.create_time|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
-                    {% if request.session.user.acct == 'jumboooo' %}
-                        <a>&nbsp;&nbsp;删除&nbsp;&nbsp;</a>
+                    {% if request.session.user.acct == comment.user_name or request.session.user.acct == 'jumbooo' %}
+                        <a href="comments/delete=id{{ comment.id }}&floor={{comment.floor}}">&nbsp;&nbsp;删除&nbsp;&nbsp;</a>
                     {% endif %}<a>回复</a>
                 </small>
                 <br>
@@ -42,6 +42,8 @@
         <ul class="pagination">
             <li><a href="comments/page=pre">&laquo;</a></li>
             {% for num in request.session.page_num_list %}
+{#                {{ num }}#}
+{#                {{ request.session.current_num }}#}
                 {% if  num == request.session.current_num %}
                     <li class="active"><a href="comments/page={{ num }}">{{ num }}</a></li>
                 {% else %}
