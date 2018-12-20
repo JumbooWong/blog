@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
-from blog1.views import articles, albums, home, article, comments, goToRegisterPage, register, login, logout,loginClose
+from blog1.views import articles, albums, home, article, comments, goToRegisterPage, register, \
+    login, logout,loginClose
+from blog1.comments import commentPage,commentDel
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +37,11 @@ urlpatterns = [
     url('^logout$', logout, name='logout'),
     url('^loginClose$', loginClose, name='loginClose'),
 
+    #评论分页功能
+    url('^comments/page', commentPage, name='commentPage'),
+
+    #评论删除功能
+    url('^comments/delete=', commentDel, name='commentDel'),
 
 
     # 二级子页面配置

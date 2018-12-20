@@ -2,54 +2,54 @@
 from django.shortcuts import render, redirect
 from blog1 import http as hp
 from blog1.Dao.messages import showMessage,addMessage
-
+from blog1.seesions import sessionUpdate
 # 主页
 def home(request):
+    # request.session.pop('current_num')
     data = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”'
     time = '2018-9-08 12:00:12'
-    # REST接口
-    url = 'http://47.105.163.206:8002/blog/get?id=1'
-    # res = requests.get(url)
-    # content = json.loads(res.text)
-    # data = content['content']
-    # time = content['createTime']
-    # read_time = content['readTime']
+    # 获取数据库中一共多少条数据
+    sessionUpdate(request)
     request.session['url'] = request.path
-    # request.session['login_stat'] = '1'
     return render(request, 'home.html', {'top1': data, 'time': time, 'read_time': 5})
 
 
 # 所有文章页面
 def articles(request):
+    sessionUpdate(request)
     request.session['url'] = request.path
     return render(request, 'articles.html')
 
 
 # 相册页面
 def albums(request):
+    sessionUpdate(request)
     request.session['url'] = request.path
     return render(request, 'albums.html')
 
 
 # 留言页面
 def comments(request):
+    sessionUpdate(request)
     if request.method == 'POST':
         concat = request.POST
-        message = concat.get('message')
+        message = concat.get('message').strip()
 
         if request.session.get('user', False) and message:
             # request.session['message'] = None
             # 插入数据库
             add_status = addMessage(request.session['user']['acct'],message)
-            if add_status:print('评论成功！')
+            if add_status:
+                request.session['current_num'] = 1
+                print('评论成功！')
             else:print('评论失败！')
-            #前端处理
-        # else:
-        #     request.session['message'] = message.strip()
+
     # 从数据库中读取评论数据
-    comments = showMessage(5)
+    comments = showMessage(request.session.get('max_message',0),request.session['current_num'])
     request.session['url'] = request.path
-    return render(request, 'comments.html', {'comments': comments})
+    return render(request, 'comments.html',{'comments':comments})
+
+
 
 
 # 单文章
@@ -133,8 +133,9 @@ def logout(request):
     request.session['login_stat']='1'
     return redirect(pre_url)
 
-
+#关闭登录页面
 def loginClose(request):
     pre_url = request.session.get('url')
     request.session['login_stat'] = '1'
     return redirect(pre_url)
+
