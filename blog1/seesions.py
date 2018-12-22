@@ -1,6 +1,6 @@
 from blog1.comments import showPageList
 from math import ceil
-from blog1.Dao import messages
+from blog1.dao import messages
 #更新评论相关内容
 def sessionUpdate(request):
     message_count = messages.messageCount()
