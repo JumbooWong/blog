@@ -46,7 +46,7 @@ def commentPage(request):
         request.session['current_num'] = current_num
     return redirect(pre_url)
 
-from blog1.Dao.messages import deleteMessage,messageCount
+from blog1.dao.messages import deleteMessage,messageCount
 from math import ceil
 #删除评论
 def commentDel(request):

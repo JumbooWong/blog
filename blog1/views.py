@@ -1,17 +1,25 @@
 # 视图层
 from django.shortcuts import render, redirect
-from blog1 import http as hp
-from blog1.Dao.messages import showMessage,addMessage
+
+from blog1.dao.messages import showMessage, addMessage
 from blog1.seesions import sessionUpdate
+from blog1.utils import http as hp
+from blog1.domain import blog as bg
+from blog1.domain import user as usr
+import json
 # 主页
 def home(request):
-    # request.session.pop('current_num')
-    data = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”'
-    time = '2018-9-08 12:00:12'
+    ## 获取blog列表
+    blogStringList = bg.getBlogList()
+    blogList = []
+    for each in blogStringList:
+        blog = bg.Blog(**each)
+        blogList.append(blog)
+
     # 获取数据库中一共多少条数据
     sessionUpdate(request)
     request.session['url'] = request.path
-    return render(request, 'home.html', {'top1': data, 'time': time, 'read_time': 5})
+    return render(request, 'home.html', {'blogList':blogList})
 
 
 # 所有文章页面
@@ -38,26 +46,26 @@ def comments(request):
         if request.session.get('user', False) and message:
             # request.session['message'] = None
             # 插入数据库
-            add_status = addMessage(request.session['user']['acct'],message)
+            add_status = addMessage(request.session['user']['acct'], message)
             if add_status:
                 request.session['current_num'] = 1
                 print('评论成功！')
-            else:print('评论失败！')
+            else:
+                print('评论失败！')
 
     # 从数据库中读取评论数据
-    comments = showMessage(request.session.get('max_message',0),request.session['current_num'])
+    comments = showMessage(request.session.get('max_message', 0), request.session['current_num'])
     request.session['url'] = request.path
-    return render(request, 'comments.html',{'comments':comments})
-
-
+    return render(request, 'comments.html', {'comments': comments})
 
 
 # 单文章
 def article(request):
-    title = 'Hola,Spain'
-    content = '“如果你想要去西班牙度蜜月或者跟人私奔的话，龙达是最适合的地方，全部城市目之所及都是浪漫的风景……”选择龙达的原因只因为他是海明威口中的私奔之城。整个城市都在悬崖峭壁之上，小镇的老城区和新城区通过新桥连接起来。'
+    id = request.GET.get('id')
+    blog = bg.getBlog(id)
+    print(id)
     request.session['url'] = request.path
-    return render(request, 'articles/article.html', {'title': title, 'content': content})
+    return render(request, 'articles/article.html',{'blog':blog})
 
 
 # 跳转到注册界面
@@ -96,10 +104,7 @@ def login(request):
         print(username, password, keep)
         pre_url = request.session.get('url')
         if username and password:
-            # url = "http://47.105.163.206:8003/user/login?username=" + username + "&password=" + password
-            # user = hp.get(url)
-            user = {'acct':username}
-            print(user)
+            user = usr.login(username,password)
             if (user):
                 print("登录成功")
                 request.session['user'] = user
@@ -124,18 +129,17 @@ def login(request):
         return redirect(pre_url)
 
 
-
 # 退出登录
 def logout(request):
     # request.session['user'] = None
     pre_url = request.session.get('url')
     request.session.pop('user')
-    request.session['login_stat']='1'
+    request.session['login_stat'] = '1'
     return redirect(pre_url)
 
-#关闭登录页面
+
+# 关闭登录页面
 def loginClose(request):
     pre_url = request.session.get('url')
     request.session['login_stat'] = '1'
     return redirect(pre_url)
-

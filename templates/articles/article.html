@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>spain</title>
+
 </head>
+
 <body>
 <div class="container">
-    <h3 style="text-align:center;">{{ title }}</h3>
+    <h3 style="text-align:center;">{{ blog.title }}</h3>
     <div id="content">
-        {{ content }}
     </div>
 
 
 </div>
 </body>
+<script type="text/javascript" src="../static/js/markdown/showdown.min.js"></script>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    var content = "{{ blog.content }}";
+    console.log(content);
+    content = content.replace(/&lt;br&gt;/g,"\n");
+    console.log(content);
+    var converter = new showdown.Converter();
+    var html = converter.makeHtml(content);
+    document.getElementById("content").innerHTML = html;
+</script>
 </html>

@@ -45,6 +45,6 @@ urlpatterns = [
 
 
     # 二级子页面配置
-    url('^articles/article$', article, name='article'),
+    url('^articles/article', article, name='article'),
 
 ]
