@@ -8,6 +8,8 @@
     <title>MJ's Blog</title>
 
 </head>
+{% block css %}
+{% endblock %}
 <body id="body">
 <div id="hidebg"></div>
 
@@ -17,13 +19,13 @@
         <li name="home" role="presentation"><a href="/">个人主页</a></li>
     </ul>
     <ul class="nav navbar-nav">
-        <li role="presentation"><a href="articles">所有文章</a></li>
+        <li role="presentation"><a href="/articles">所有文章</a></li>
     </ul>
     <ul class="nav navbar-nav">
-        <li role="presentation"><a href="albums">相册</a></li>
+        <li role="presentation"><a href="/albums">相册</a></li>
     </ul>
     <ul class="nav navbar-nav">
-        <li role="presentation"><a href="comments">留言</a></li>
+        <li role="presentation"><a href="/comments">留言</a></li>
     </ul>
     {#    <img src="/static/images/tx.jpg" style="float:right;width: 30px; height: 30px;margin: 10px">#}
     {% if request.session.user %}

@@ -1,29 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>spain</title>
+{% extends 'common/head.html' %}    # 继承母版内容
 
-</head>
+<!-- 填充页面css样式内容 -->
+{% block css %}
+    <link rel="stylesheet" href="/static/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/css/self.css"/>
+{% endblock %}
+{% block body-content %}
+    <div class="container" style="width: 100%; float: right">
+        <h3 style="text-align:center;">{{ blog.title }}</h3>
+        <div id="content">
+        </div>
 
-<body>
-<div class="container">
-    <h3 style="text-align:center;">{{ blog.title }}</h3>
-    <div id="content">
+
     </div>
+{% endblock %}
 
+<!-- 填充页面js代码内容 -->
+{% block js %}
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/markdown/showdown.min.js"></script>
 
-</div>
-</body>
-<script type="text/javascript" src="../static/js/markdown/showdown.min.js"></script>
-<script src="../static/js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript">
-    var content = "{{ blog.content }}";
-    console.log(content);
-    content = content.replace(/&lt;br&gt;/g,"\n");
-    console.log(content);
-    var converter = new showdown.Converter();
-    var html = converter.makeHtml(content);
-    document.getElementById("content").innerHTML = html;
-</script>
-</html>
+    <script type="text/javascript">
+        var content = "{{ blog.content }}";
+        console.log(content);
+        content = content.replace(/&lt;br&gt;/g, "\n");
+        console.log(content);
+        var converter = new showdown.Converter();
+        var html = converter.makeHtml(content);
+        document.getElementById("content").innerHTML = html;
+    </script>
+
+{% endblock %}
