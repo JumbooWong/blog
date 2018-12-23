@@ -1,7 +1,7 @@
 # 视图层
 from django.shortcuts import render, redirect
 
-from blog1.dao.messages import showMessage, addMessage
+from blog1.dao.messages import showMessage, addMessage,messageCount
 from blog1.seesions import sessionUpdate
 from blog1.utils import http as hp
 from blog1.domain import blog as bg
@@ -35,25 +35,28 @@ def albums(request):
     request.session['url'] = request.path
     return render(request, 'albums.html')
 
-
+from blog1.seesions import showPageList
 # 留言页面
 def comments(request):
     sessionUpdate(request)
     if request.method == 'POST':
         concat = request.POST
         message = concat.get('message').strip()
-
         if request.session.get('user', False) and message:
             # request.session['message'] = None
             # 插入数据库
             add_status = addMessage(request.session['user']['acct'], message)
+            sessionUpdate(request)
             if add_status:
+                # if request.session['page_num'] < messageCount()/request.session['show_num']:request.session['change'] = 'add'
+                request.session['page_num_list'] = showPageList(request.session.get('page_num'),request.session['show_num'])
                 request.session['current_num'] = 1
                 print('评论成功！')
             else:
                 print('评论失败！')
 
     # 从数据库中读取评论数据
+
     comments = showMessage(request.session.get('max_message', 0), request.session['current_num'])
     request.session['url'] = request.path
     return render(request, 'comments.html', {'comments': comments})
