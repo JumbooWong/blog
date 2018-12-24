@@ -23,10 +23,13 @@ from blog1.comments import commentPage,commentDel
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # 二级子页面配置
+    url('^articles/article', article, name='article'),
+
     # 主页url配置
     url('^$', home, name='index'),
     url('^home$', home, name='home'),
-    url('^articles$', articles, name='articles'),
+    url('^articles', articles, name='articles'),
     url('^albums$', albums, name='albums'),
     url('^comments$', comments, name='comments'),
 
@@ -44,7 +47,7 @@ urlpatterns = [
     url('^comments/delete=', commentDel, name='commentDel'),
 
 
-    # 二级子页面配置
-    url('^articles/article', article, name='article'),
+
+
 
 ]

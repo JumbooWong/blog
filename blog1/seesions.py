@@ -26,8 +26,8 @@ def sessionUpdate(request):
         elif mod != 1:
             current = current - mod + 1
         request.session['page_num_list'] = showPageList(request.session.get('page_num'), request.session['show_num'],current=current,type = 'del')
-            # request.session['page_num_list'] = showPageList(request.session.get('page_num'),
-            #                                                 request.session['show_num'], current=current, type='del')
+    else:
+        request.session['page_num_list'] = showPageList(request.session.get('page_num'),request.session['show_num'])
 
     if not request.session.get('current_num'):request.session['current_num'] = 1
     # request.session['current_num'] = 1
@@ -36,7 +36,6 @@ def sessionUpdate(request):
 def showPageList(page_num, show_num, current=1, type='next'):
     page_list = []
     if type == 'next':
-        print('total page num',page_num)
         num = min(page_num - current + 1, show_num)
         for i in range(current, current + num):
             page_list.append(i)

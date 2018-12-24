@@ -1,11 +1,13 @@
 # 视图层
 from django.shortcuts import render, redirect
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog1.models import message_info
 from blog1.dao.messages import showMessage, addMessage,messageCount
 from blog1.seesions import sessionUpdate
 from blog1.utils import http as hp
 from blog1.domain import blog as bg
 from blog1.domain import user as usr
+from math import ceil
 import json
 # 主页
 def home(request):
@@ -18,6 +20,7 @@ def home(request):
 
     # 获取数据库中一共多少条数据
     sessionUpdate(request)
+
     request.session['url'] = request.path
     return render(request, 'home.html', {'blogList':blogList})
 
@@ -26,7 +29,28 @@ def home(request):
 def articles(request):
     sessionUpdate(request)
     request.session['url'] = request.path
-    return render(request, 'articles.html')
+    blogStringList = bg.getBlogList()
+    blogList = []
+    for each in blogStringList:
+        blog = bg.Blog(**each)
+        blogList.append(blog)
+    # 获取数据库中一共多少条数据
+    contact_list = message_info.objects.get_queryset().order_by('id')  # 获取所有contacts,假设在models.py中已定义了Contacts模型
+    page_num = 1
+    paginator = Paginator(blogList, page_num)  # 每页25条
+    print('duoshaoye')
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    print(contacts.paginator.num_pages,contacts.number)
+    current = (contacts.number-1) * page_num
+    return render(request, 'articles.html',{'blogList': blogList[current:current+page_num],'contacts':contacts})
 
 
 # 相册页面
@@ -146,3 +170,5 @@ def loginClose(request):
     pre_url = request.session.get('url')
     request.session['login_stat'] = '1'
     return redirect(pre_url)
+
+
