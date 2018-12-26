@@ -35,7 +35,7 @@ def articles(request):
         blog = bg.Blog(**each)
         blogList.append(blog)
     # 获取数据库中一共多少条数据
-    contact_list = message_info.objects.get_queryset().order_by('id')  # 获取所有contacts,假设在models.py中已定义了Contacts模型
+ # 获取所有contacts,假设在models.py中已定义了Contacts模型
     page_num = 1
     paginator = Paginator(blogList, page_num)  # 每页25条
     print('duoshaoye')
