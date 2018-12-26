@@ -1,11 +1,13 @@
 # 视图层
 from django.shortcuts import render, redirect
-
-from blog1.dao.messages import showMessage, addMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog1.models import message_info
+from blog1.dao.messages import showMessage, addMessage,messageCount
 from blog1.seesions import sessionUpdate
 from blog1.utils import http as hp
 from blog1.domain import blog as bg
 from blog1.domain import user as usr
+from math import ceil
 import json
 # 主页
 def home(request):
@@ -18,6 +20,7 @@ def home(request):
 
     # 获取数据库中一共多少条数据
     sessionUpdate(request)
+
     request.session['url'] = request.path
     return render(request, 'home.html', {'blogList':blogList})
 
@@ -26,7 +29,28 @@ def home(request):
 def articles(request):
     sessionUpdate(request)
     request.session['url'] = request.path
-    return render(request, 'articles.html')
+    blogStringList = bg.getBlogList()
+    blogList = []
+    for each in blogStringList:
+        blog = bg.Blog(**each)
+        blogList.append(blog)
+    # 获取数据库中一共多少条数据
+ # 获取所有contacts,假设在models.py中已定义了Contacts模型
+    page_num = 1
+    paginator = Paginator(blogList, page_num)  # 每页25条
+    print('duoshaoye')
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)  # contacts为Page对象！
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        contacts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        contacts = paginator.page(paginator.num_pages)
+    print(contacts.paginator.num_pages,contacts.number)
+    current = (contacts.number-1) * page_num
+    return render(request, 'articles.html',{'blogList': blogList[current:current+page_num],'contacts':contacts})
 
 
 # 相册页面
@@ -35,25 +59,28 @@ def albums(request):
     request.session['url'] = request.path
     return render(request, 'albums.html')
 
-
+from blog1.seesions import showPageList
 # 留言页面
 def comments(request):
     sessionUpdate(request)
     if request.method == 'POST':
         concat = request.POST
         message = concat.get('message').strip()
-
         if request.session.get('user', False) and message:
             # request.session['message'] = None
             # 插入数据库
             add_status = addMessage(request.session['user']['acct'], message)
+            sessionUpdate(request)
             if add_status:
+                # if request.session['page_num'] < messageCount()/request.session['show_num']:request.session['change'] = 'add'
+                request.session['page_num_list'] = showPageList(request.session.get('page_num'),request.session['show_num'])
                 request.session['current_num'] = 1
                 print('评论成功！')
             else:
                 print('评论失败！')
 
     # 从数据库中读取评论数据
+
     comments = showMessage(request.session.get('max_message', 0), request.session['current_num'])
     request.session['url'] = request.path
     return render(request, 'comments.html', {'comments': comments})
@@ -143,3 +170,5 @@ def loginClose(request):
     pre_url = request.session.get('url')
     request.session['login_stat'] = '1'
     return redirect(pre_url)
+
+
