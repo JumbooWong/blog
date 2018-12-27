@@ -12,7 +12,7 @@
         {% for blog in blogList %}
             <div id="top1" style="float:right;width: 98%">
                 <li><a href="articles/article?id={{ blog.id }}" style="font-size:16px;">{{ blog.title }}</a></li>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ blog.content }}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ blog.description }}
                 <br>
                 <small style="float: right">{{ blog.createTime }} &nbsp;&nbsp;阅读数：{{ blog.readTime }}&nbsp;&nbsp;评论数：0
                     &nbsp;&nbsp; &nbsp;&nbsp;
