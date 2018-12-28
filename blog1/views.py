@@ -10,6 +10,8 @@ from blog1.domain import user as usr
 from math import ceil
 import json
 # 主页
+
+read_time = 0
 def home(request):
     ## 获取blog列表
     blogStringList = bg.getBlogList()
@@ -17,12 +19,13 @@ def home(request):
     for each in blogStringList:
         blog = bg.Blog(**each)
         blogList.append(blog)
-
+    global read_time
+    read_time += 1
     # 获取数据库中一共多少条数据
     sessionUpdate(request)
 
     request.session['url'] = request.path
-    return render(request, 'home.html', {'blogList':blogList})
+    return render(request, 'home.html', {'blogList':blogList,'read_time':read_time})
 
 
 # 所有文章页面
@@ -50,14 +53,14 @@ def articles(request):
         contacts = paginator.page(paginator.num_pages)
     print(contacts.paginator.num_pages,contacts.number)
     current = (contacts.number-1) * page_num
-    return render(request, 'articles.html',{'blogList': blogList[current:current+page_num],'contacts':contacts})
+    return render(request, 'articles.html',{'blogList': blogList[current:current+page_num],'contacts':contacts,'read_time':read_time})
 
 
 # 相册页面
 def albums(request):
     sessionUpdate(request)
     request.session['url'] = request.path
-    return render(request, 'albums.html')
+    return render(request, 'albums.html',{'read_time':read_time})
 
 from blog1.seesions import showPageList
 # 留言页面
@@ -83,7 +86,7 @@ def comments(request):
 
     comments = showMessage(request.session.get('max_message', 0), request.session['current_num'])
     request.session['url'] = request.path
-    return render(request, 'comments.html', {'comments': comments})
+    return render(request, 'comments.html', {'comments': comments,'read_time':read_time})
 
 
 # 单文章
@@ -92,7 +95,7 @@ def article(request):
     blog = bg.getBlog(id)
     print(id)
     request.session['url'] = request.path
-    return render(request, 'articles/article.html',{'blog':blog})
+    return render(request, 'articles/article.html',{'blog':blog,'read_time':read_time})
 
 
 # 跳转到注册界面
