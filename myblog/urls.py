@@ -31,6 +31,11 @@ urlpatterns = [
     url('^home$', home, name='home'),
     url('^articles', articles, name='articles'),
     url('^albums$', albums, name='albums'),
+
+
+
+#评论分页功能
+    url('^comments/page', commentPage, name='commentPage'),
     url('^comments$', comments, name='comments'),
 
     # 登录、注册
@@ -40,11 +45,10 @@ urlpatterns = [
     url('^logout$', logout, name='logout'),
     url('^loginClose$', loginClose, name='loginClose'),
 
-    #评论分页功能
-    url('^comments/page', commentPage, name='commentPage'),
+
 
     #评论删除功能
-    url('^comments/delete=', commentDel, name='commentDel'),
+    url('^comments/delete', commentDel, name='commentDel'),
 
 
 
