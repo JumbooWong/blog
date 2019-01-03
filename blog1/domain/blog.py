@@ -3,9 +3,10 @@ from myblog import config
 
 
 class Blog:
-    def __init__(self, id, title, content, createTime, modifyTime, readTime):
+    def __init__(self, id, title, description, content, createTime, modifyTime, readTime):
         self.id = id
         self.title = title
+        self.description = description
         self.content = content
         self.createTime = createTime
         self.modifyTime = modifyTime
