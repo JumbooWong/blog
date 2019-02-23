@@ -5,7 +5,7 @@ from blog1.dao import messages
 def sessionUpdate(request):
     message_count = messages.messageCount()
     # 每页显示max_message条数据
-    max_message = 2
+    max_message = 8
     request.session['max_message'] = max_message
     # 总页数
     page_num = ceil(message_count / max_message)
